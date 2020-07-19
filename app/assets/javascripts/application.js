@@ -15,3 +15,8 @@
 //= require jquery
 //= require jquery_ujs
 //= require_tree .
+//= require ace/ace
+//= require ace/theme-twilight
+//= require ace/theme-dawn
+//= require jquery-ace.min
+//= require ace/mode-javascript

@@ -1,26 +1,27 @@
 class CommentsController < ApplicationController
-	before_action :authenticate_user!, only: [:create, :destroy]
+  before_action :authenticate_user!, only: [:create, :destroy]
 
   def create
-  	@shot = Shot.find(params[:shot_id]) # finds the shot with the associated shot_id
-  	@comment = @shot.comments.create(comment_params) # creates the comment on the shot passing in params 
-  	@comment.user_id = current_user.id if current_user # assigns logged in user's ID to comment
-  	@comment.save!
+    @snippet = Snippet.find(params[:snippet_id])
+    @comment = @snippet.comments.create(comment_params)
+    @comment.user_id = current_user.id if current_user
+    @comment.name = current_user.name if current_user
+    @comment.save!
 
-  	redirect_to shot_path(@shot)
+    redirect_to snippet_path(@snippet)
 
   end
 
   def destroy
-  	@shot = Shot.find(params[:shot_id])
-  	@comment = @shot.comments.find(params[:id])
-  	@comment.destroy
-  	redirect_to shot_path(@shot)
+    @snippet = Snippet.find(params[:snippet_id])
+    @comment = @snippet.comments.find(params[:id])
+    @comment.destroy
+    redirect_to snippet_path(@snippet)
   end
 
   private
 
-  def comment_params 
-  	params.require(:comment).permit(:name, :response)
+  def comment_params
+    params.require(:comment).permit(:response)
   end
 end

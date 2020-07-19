@@ -1,0 +1,14 @@
+<% if !user_signed_in? %>
+  <section class="hero is-dark">
+    <div class="hero-body">
+      <div class="container has-text-centered">
+        <h1 class="title is-size-5">
+          What are you learning? <span class="has-text-grey-light">Code Snip Save is where you can learn how to advance your skills.. 
+        </h1>
+        <div class="content">
+          <%= link_to "login", new_user_session_path, class: "button is-primary"%>
+        </div>
+      </div>
+    </div>
+  </section>
+<%end%>

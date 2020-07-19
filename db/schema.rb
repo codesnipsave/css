@@ -10,14 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171217161008) do
+ActiveRecord::Schema.define(version: 20200719210413) do
 
   create_table "comments", force: :cascade do |t|
     t.string "name"
     t.text "response"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "shot_id"
+    t.integer "snippet_id"
     t.integer "user_id"
   end
 
@@ -47,13 +47,31 @@ ActiveRecord::Schema.define(version: 20171217161008) do
     t.index ["user_id"], name: "index_impressions_on_user_id"
   end
 
-  create_table "shots", force: :cascade do |t|
-    t.string "title"
-    t.text "description"
-    t.integer "user_id"
+  create_table "snippet_tags", force: :cascade do |t|
+    t.integer "tag_id"
+    t.integer "snippet_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "user_shot"
+    t.index ["snippet_id"], name: "index_snippet_tags_on_snippet_id"
+    t.index ["tag_id"], name: "index_snippet_tags_on_tag_id"
+  end
+
+  create_table "snippets", force: :cascade do |t|
+    t.string "title"
+    t.text "common"
+    t.text "beginner"
+    t.text "expert"
+    t.integer "user_id"
+    t.integer "snippet_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "username"
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -62,11 +80,6 @@ ActiveRecord::Schema.define(version: 20171217161008) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.string "current_sign_in_ip"
-    t.string "last_sign_in_ip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name"

@@ -1,0 +1,169 @@
+<div class="section">
+  <div class="container">
+    <h1 class="title is-3"><%= @snippet.title %></h1>
+    <div class="columns">
+      <div class="column is-8">
+        <span class="by has-text-grey-light">by</span>
+        <div class="user-thumb">
+         <%if @snippet.user%>
+          <%= gravatar_image_tag(@snippet.user.email.gsub('spam', 'mdeering'), alt: @snippet.user.name, gravatar: {size:20})%>
+          <%else%>
+          <% if  @snippet.username%> <%= @snippet.username%> <%else%> anon <%end%>
+          <%end%>
+        </div>
+   <% if @parent %>
+           <h1>Realted to :  <%= link_to @parent.title, snippet_path(@parent.id) %></h1>
+            <%end%>
+        <div class="user-name has-text-weight-bold"><% if  @snippet.username%> <%= @snippet.username%> <%else%> anon <%end%></div>
+        <div class="shot-time"><span class="has-text-grey-light">created</span>
+        <span class="has-text-weight-semibold">
+          <%= verbose_date(@snippet.created_at)%>
+        </span>
+      </div>
+    </div>
+    </div>
+
+    <div class="columns">
+      <div class="column is-8">
+        <div class="shot-container">
+          <div class="shot-full">
+           <%=text_area :snippet, :common, class: 'editor', disabled: 'disabled' %>
+          </div>
+
+          <% if user_signed_in? && (current_user.id == @snippet.user_id) %>
+            <div class="buttons has-addons">
+              <%= link_to 'Edit', edit_snippet_path(@snippet), class: "button"%>
+            </div>
+          <%end%>
+
+          <div class="content">
+            
+            <%=text_area :snippet, :beginner, class: 'editor', disabled: 'disabled' %>
+          </div>
+          <div class="content">
+            
+            <%=text_area :snippet, :expert, class: 'editor', disabled: 'disabled' %>
+          </div>
+          <div class="content">
+            
+            <%@tags.each do |tag| %>
+            <%= tag.name %>
+            <%end%>
+
+           
+          </div>
+
+          <div>
+          <h1>Updates</h1>
+           <%@updates.each do |snip| %>
+            <%= link_to snip.title, snippet_path(snip.id) %>
+            <%end%>
+            </div>
+
+         
+
+        <div class="shot-time"><span class="has-text-grey-light">Updated</span>
+        <span class="has-text-weight-semibold">
+          <%= verbose_date(@snippet.updated_at)%>
+        </span>
+          
+          <section class="comments">
+            <h2 class="subtitle is-5"><%= pluralize(@snippet.comments.count, "Comment")%></h2>
+
+            <%= render @snippet.comments %>
+            <hr/>
+            <% if user_signed_in?%>
+              <div class="comment-form">
+                <h3 class="subtitle is-3">Leave a reply</h3>
+                <%= render 'comments/form' %>
+              </div>
+            <%else%>
+              <div class="content"><%= link_to 'Sign in', new_user_session_path %> to leave a comment.</div>
+            <%end%>
+          </section>
+
+      </div>
+    </div>
+
+    <div class="column is-3 is-offset-1">
+      <div class="nav panel show-shot-analytics">
+        <div class="panel-block views data">
+          <span class="icon"><i class="fa fa-eye"></i></span>
+          <%= pluralize(@snippet.impressionist_count, 'view') %>
+        </div>
+
+        <div class="panel-block comments data">
+          <span class="icon"><i class="fa fa-comment"></i></span>
+          <%= pluralize(@snippet.comments.count, 'comment') %>
+        </div>
+
+        <div class="panel-block likes data">
+            <%if user_signed_in?%>
+             <% if current_user.id == @snippet.user_id %>
+                <span class="like_shot">
+                <span class="icon"><i class="fa fa-heart has-text-primary"></i></span>
+                <span class="vote_count"><%= pluralize(@snippet.get_likes.size, 'Vote') %></span>
+                </span>
+              <%else%>
+                <% if current_user.liked? @snippet %>
+                  <%= link_to unvote_snippet_path(@snippet), method: :put, class: "unlike_shot" do %>
+                    <span class="icon"><i class="fa fa-heart has-text-primary"></i></span>
+                    <span class="vote_count"><%= pluralize(@snippet.get_likes.size, 'Vote') %></span>
+                  <%end%>
+                <%else%>
+                  <%= link_to vote_snippet_path(@snippet), method: :put, class: "like_shot" do %>
+                  <span class="icon"><i class="fa fa-heart"></i></span>
+                  <span class="vote_count"><%= pluralize(@snippet.get_likes.size, 'Vote') %></span>
+                  <%end%>
+                <%end%>
+              <%end%>
+            <%else%>
+                <%= link_to vote_snippet_path(@snippet), method: :put, class: "like_shot" do %>
+                <span class="icon"><i class="fa fa-heart"></i></span>
+                <span class="vote_count"><%= pluralize(@snippet.get_likes.size, 'Vote') %></span>
+              <%end%>
+            <%end%>
+        </div>
+
+        <div class="panel-block likes data">
+            <%if user_signed_in?%>
+             <% if current_user.id == @snippet.user_id %>
+                <span class="like_shot">
+                <span class="icon"><i class="fa fa-heart has-text-primary"></i></span>
+                <span class="vote_count"><%= pluralize(@snippet.get_likes.size, 'Outdated Vote') %></span>
+                </span>
+              <%else%>
+                <% if current_user.liked? @snippet %>
+                  <%= link_to unvote_snippet_path(@snippet), method: :put, class: "unlike_shot" do %>
+                    <span class="icon"><i class="fa fa-heart has-text-primary"></i></span>
+                    <span class="vote_count"><%= pluralize(@snippet.get_likes.size, 'Outdated Vote') %></span>
+                  <%end%>
+                <%else%>
+                  <%= link_to vote_snippet_path(@snippet), method: :put, class: "like_shot" do %>
+                  <span class="icon"><i class="fa fa-heart"></i></span>
+                  <span class="vote_count"><%= pluralize(@snippet.get_likes.size, 'Outdated Vote') %></span>
+                  <%end%>
+                <%end%>
+              <%end%>
+
+            <%else%>
+                <%= link_to vote_snippet_path(@snippet), method: :put, class: "like_shot" do %>
+                <span class="icon"><i class="fa fa-heart"></i></span>
+                <span class="vote_count"><%= pluralize(@snippet.get_likes.size, 'Outdated Vote') %></span>
+              <%end%>
+            <%end%>
+            
+        </div>
+
+              <div>
+              <%= link_to 'flag snippet', flag_snippet_path(@snippet), method: :post %>
+              </div>
+
+      </div>
+    </div>
+  </div>
+
+
+<script>
+  $('#snippet_expert, #snippet_common, #snippet_beginner').ace({theme: 'dawn', lang: 'javascript'})
+</script>

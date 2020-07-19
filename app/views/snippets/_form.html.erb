@@ -1,0 +1,60 @@
+<% if @parent == true %>
+
+<%= simple_form_for([@snippet, @snippet.snippets.build]) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :title %>
+  </div>
+  <div class="form-inputs">
+  <label>Common Code</label>
+    <%= f.text_area :common , class: 'editor'%>
+  </div>
+  <div class="form-inputs">
+  <label>Beginner Code</label>
+    <%= f.text_area :beginner , class: 'editor'%>
+  </div>
+  <div class="form-inputs">
+  <label>Expert Code</label>
+    <%= f.text_area :expert , class: 'editor'%>
+  </div>
+ 
+  <%= select_tag 'tags[]', options_for_select(@tags.map{|t| [t.name, t.id]}, @snippet.tags.pluck(:id)), :multiple => true %>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>
+<%else %>
+<%= simple_form_for(@snippet) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :title %>
+  </div>
+  <div class="form-inputs">
+  <label>Common Code</label>
+    <%= f.text_area :common , class: 'editor'%>
+  </div>
+  <div class="form-inputs">
+  <label>Beginner Code</label>
+    <%= f.text_area :beginner , class: 'editor'%>
+  </div>
+  <div class="form-inputs">
+  <label>Expert Code</label>
+    <%= f.text_area :expert , class: 'editor'%>
+  </div>
+ 
+ <%if @tags%>
+  <%= select_tag 'tags[]', options_for_select(@tags.map{|t| [t.name, t.id]}, @snippet.tags.pluck(:id)), :multiple => true %>
+  <%end%>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>
+<% end %>
+
+<script>
+$('#snippet_expert, #snippet_common, #snippet_beginner').ace({theme: 'dawn', lang: 'javascript'})
+</script>
